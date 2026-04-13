@@ -1,0 +1,22 @@
+root@debian:~# doker ps
+-bash: doker: command not found
+root@debian:~# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@debian:~# docker run -d -p 8080:80 --name test-web nginx
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+448ea5cac5d5: Pull complete
+5435b2dcdf5c: Pull complete
+054715a6bffa: Pull complete
+88d1d984b765: Pull complete
+4a038fd18db1: Pull complete
+84e114c2bb36: Pull complete
+7b5d674621c2: Pull complete
+3eff0a97d435: Download complete
+cc0cf959117b: Download complete
+Digest: sha256:7f0adca1fc6c29c8dc49a2e90037a10ba20dc266baaed0988e9fb4d0d8b85ba0
+Status: Downloaded newer image for nginx:latest
+f40ce5eefa1fd6b57516bf901c3e728fe563f9f9269cc64c06ccb38b92dde28d
+root@debian:~# docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                            NAMES
+f40ce5eefa1f   nginx     "/docker-entrypoint.…"   40 seconds ago   Up 39 seconds   0.0.0.0:8080->80/tcp, [::]:80       80->80/tcp   test-web
