@@ -1,22 +1,44 @@
-root@debian:~# doker ps
--bash: doker: command not found
+
+root@debian:~# docker run -d -p 8080:80 --name test-web nginx
+b861bedbd2e98b0c949ebc7cad442167ab0c0f1b7496a583e36476920bdd4242
+root@debian:~# docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                     NAMES
+b861bedbd2e9   nginx     "/docker-entrypoint.…"   8 seconds ago   Up 7 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   test-web
+root@debian:~# for i in {1..10}; do sudo docker run -d --name nginx-server-$i nginx; done
+43080dc97d2abb4999941363372c78c7f591bf6ea5797ffa62a32a660c3dce33
+34102f853385751cddfa44a5752d6fbd96906fdb7a64a3987b3c91079cfe536a
+395463d0a01dbc1c633dba8a89b8fca1fd1268e3d19cda4b0373ee4b317ed58b
+2629e43a7cac17345d8d57392a3c30ccd6cbd5989d7b6e44671186d5d62d4a44
+b4e110bac8531b2e21b5ec4dffd9b50f053f5afb3ddec03c59849ec74ac467be
+e3a05c963e70926a958fbcd001efa9033d5b981b8d7acd91db9b3b6d3ef40f9d
+2344b6e478760a9d70939c446d5a8e4c2af906bd4e84a766fd1707c5bd3d124c
+62365caa42a4aa3b2acf758f2f1ccc2280ba5b724af13c621f529e8cb5e2c099
+47bd8cce61ff6614d7f716d7de74afdf2eeb55be02dfee65cd9c46f3b95ba16d
+e9b803739def7d8516dc4d7464cf7aae9f3d5e9a8be9dcf807e67bb5faf59d4f
+root@debian:~# docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                     NAMES
+e9b803739def   nginx     "/docker-entrypoint.…"   3 seconds ago    Up 3 seconds    80/tcp                                    nginx-server-10
+47bd8cce61ff   nginx     "/docker-entrypoint.…"   4 seconds ago    Up 3 seconds    80/tcp                                    nginx-server-9
+62365caa42a4   nginx     "/docker-entrypoint.…"   4 seconds ago    Up 4 seconds    80/tcp                                    nginx-server-8
+2344b6e47876   nginx     "/docker-entrypoint.…"   5 seconds ago    Up 4 seconds    80/tcp                                    nginx-server-7
+e3a05c963e70   nginx     "/docker-entrypoint.…"   5 seconds ago    Up 5 seconds    80/tcp                                    nginx-server-6
+b4e110bac853   nginx     "/docker-entrypoint.…"   5 seconds ago    Up 5 seconds    80/tcp                                    nginx-server-5
+2629e43a7cac   nginx     "/docker-entrypoint.…"   6 seconds ago    Up 5 seconds    80/tcp                                    nginx-server-4
+395463d0a01d   nginx     "/docker-entrypoint.…"   6 seconds ago    Up 6 seconds    80/tcp                                    nginx-server-3
+34102f853385   nginx     "/docker-entrypoint.…"   6 seconds ago    Up 6 seconds    80/tcp                                    nginx-server-2
+43080dc97d2a   nginx     "/docker-entrypoint.…"   7 seconds ago    Up 6 seconds    80/tcp                                    nginx-server-1
+b861bedbd2e9   nginx     "/docker-entrypoint.…"   26 seconds ago   Up 25 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   test-web
+root@debian:~# docker rm -f $(docker ps -aq)
+e9b803739def
+47bd8cce61ff
+62365caa42a4
+2344b6e47876
+e3a05c963e70
+b4e110bac853
+2629e43a7cac
+395463d0a01d
+34102f853385
+43080dc97d2a
+b861bedbd2e9
 root@debian:~# docker ps
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
-root@debian:~# docker run -d -p 8080:80 --name test-web nginx
-Unable to find image 'nginx:latest' locally
-latest: Pulling from library/nginx
-448ea5cac5d5: Pull complete
-5435b2dcdf5c: Pull complete
-054715a6bffa: Pull complete
-88d1d984b765: Pull complete
-4a038fd18db1: Pull complete
-84e114c2bb36: Pull complete
-7b5d674621c2: Pull complete
-3eff0a97d435: Download complete
-cc0cf959117b: Download complete
-Digest: sha256:7f0adca1fc6c29c8dc49a2e90037a10ba20dc266baaed0988e9fb4d0d8b85ba0
-Status: Downloaded newer image for nginx:latest
-f40ce5eefa1fd6b57516bf901c3e728fe563f9f9269cc64c06ccb38b92dde28d
-root@debian:~# docker ps
-CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                            NAMES
-f40ce5eefa1f   nginx     "/docker-entrypoint.…"   40 seconds ago   Up 39 seconds   0.0.0.0:8080->80/tcp, [::]:80       80->80/tcp   test-web
