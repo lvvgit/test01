@@ -1,0 +1,49 @@
+root@debian:~/apps/simple-app# docker build -t simple-app:v1 .
+[+] Building 1.6s (11/11) FINISHED                                                docker:default
+ => [internal] load build definition from Dockerfile                                        0.0s
+ => => transferring dockerfile: 536B                                                        0.0s
+ => [internal] load metadata for docker.io/library/node:20-slim                             0.5s
+ => [internal] load .dockerignore                                                           0.0s
+ => => transferring context: 2B                                                             0.0s
+ => [internal] load build context                                                           0.0s
+ => => transferring context: 595B                                                           0.0s
+ => [builder 1/4] FROM docker.io/library/node:20-slim@sha256:f93745c153377ee2fbbdd6e24efcd  0.0s
+ => => resolve docker.io/library/node:20-slim@sha256:f93745c153377ee2fbbdd6e24efcd03cd2e86  0.0s
+ => CACHED [builder 2/4] WORKDIR /app                                                       0.0s
+ => CACHED [builder 3/4] COPY package*.json ./                                              0.0s
+ => CACHED [builder 4/4] RUN npm install                                                    0.0s
+ => [stage-1 3/4] COPY --from=builder /app .                                                0.1s
+ => [stage-1 4/4] COPY . .                                                                  0.1s
+ => exporting to image                                                                      0.7s
+ => => exporting layers                                                                     0.3s
+ => => exporting manifest sha256:a735cebd1c8c38a90c7d7487cf5606686f61136b4641e90a75724d601  0.0s
+ => => exporting config sha256:f6828d9743c9bd1bd4c880c04608ff0b0009cfec095834ef0cbc24f43e2  0.0s
+ => => exporting attestation manifest sha256:e16383cde0102d7b34840a45aec3411c25999ccbc17cf  0.1s
+ => => exporting manifest list sha256:dfc472c6e384afa2bb5ce3c1380b3c9dcc460a32d3de91d18881  0.0s
+ => => naming to docker.io/library/simple-app:v1                                            0.0s
+ => => unpacking to docker.io/library/simple-app:v1                                         0.1s
+root@debian:~/apps/simple-app# docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED      STATUS      PORTS                                        NAMES
+a8b082436e83   nginx     "/docker-entrypoint.…"   2 days ago   Up 2 days   0.0.0.0:8080->80/tcp,    [::]:8080->80/tcp   test-web
+
+root@debian:~/apps/simple-app# docker run -d -p 8080:8080 --name my-running-app simple-app:v1
+3baca22b6a185303aa616fc96a05e7ad2ba4d6c6f3c8ea35323a8ccf481847b4
+root@debian:~/apps/simple-app# docker ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED         STATUS         PORTS                                               NAMES
+3baca22b6a18   simple-app:v1   "docker-entrypoint.s…"   3 seconds ago   Up 2 seconds   0.0.0.0:80     80->8080/tcp, [::]:8080->8080/tcp   my-running-app
+root@debian:~/apps/simple-app# curl http://localhost:8080
+Hello! This is a simple-app running in Docker!
+
+root@debian:~/apps/simple-app# docker tag simple-app:v1 lvv77/simple-app:v1
+root@debian:~/apps/simple-app# docker push lvv77/simple-app:v1
+The push refers to repository [docker.io/lvv77/simple-app]
+ecd81497f5c6: Pushed
+d304fb397f1a: Pushed
+c229a5665a77: Pushed
+9b97559caf99: Pushed
+c42d4dcb3775: Pushed
+d9d486b55978: Pushed
+d654216581d8: Pushed
+da539b676105: Pushed
+1a78bbc25c7f: Pushed
+v1: digest: sha256:dfc472c6e384afa2bb5ce3c1380b3c9dcc460a32d3de91d18881b27284fa5a3d size: 856
