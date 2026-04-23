@@ -1,0 +1,78 @@
+root@debian:~/apps# docker compose up -d --build
+[+] Building 1.5s (15/15) FINISHED
+ => [internal] load local bake definitions                                                                                                                                                                                                                                                                              0.0s
+ => => reading from stdin 476B                                                                                                                                                                                                                                                                                          0.0s
+ => [internal] load build definition from Dockerfile                                                                                                                                                                                                                                                                    0.0s
+ => => transferring dockerfile: 797B                                                                                                                                                                                                                                                                                    0.0s
+ => [internal] load metadata for docker.io/library/node:20-slim                                                                                                                                                                                                                                                         0.8s
+ => [auth] library/node:pull token for registry-1.docker.io                                                                                                                                                                                                                                                             0.0s
+ => [internal] load .dockerignore                                                                                                                                                                                                                                                                                       0.0s
+ => => transferring context: 2B                                                                                                                                                                                                                                                                                         0.0s
+ => [internal] load build context                                                                                                                                                                                                                                                                                       0.0s
+ => => transferring context: 122B                                                                                                                                                                                                                                                                                       0.0s
+ => [builder 1/4] FROM docker.io/library/node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0                                                                                                                                                                                           0.1s
+ => => resolve docker.io/library/node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0                                                                                                                                                                                                   0.0s
+ => CACHED [builder 2/4] WORKDIR /app                                                                                                                                                                                                                                                                                   0.0s
+ => CACHED [builder 3/4] COPY package*.json ./                                                                                                                                                                                                                                                                          0.0s
+ => CACHED [builder 4/4] RUN npm install                                                                                                                                                                                                                                                                                0.0s
+ => CACHED [stage-1 3/5] COPY --from=builder /app .                                                                                                                                                                                                                                                                     0.0s
+ => CACHED [stage-1 4/5] COPY . .                                                                                                                                                                                                                                                                                       0.0s
+ => CACHED [stage-1 5/5] RUN mkdir -p /apps/data && chown -R node:node /apps/data                                                                                                                                                                                                                                       0.0s
+ => exporting to image                                                                                                                                                                                                                                                                                                  0.3s
+ => => exporting layers                                                                                                                                                                                                                                                                                                 0.0s
+ => => exporting manifest sha256:90b6718dfb4c2fcd2c17131f0067a360b9cdd2e9b5b9cc9fc6d0f20049e2b165                                                                                                                                                                                                                       0.0s
+ => => exporting config sha256:54b0bf92ba9c040c4c98d8a81ed5700ee449a727123d2173f185ef3bc369eb29                                                                                                                                                                                                                         0.0s
+ => => exporting attestation manifest sha256:239c25f2ad11ed0d4a67862a638aa4ef19a9afd3da4f30d0f53fb019e16c00d0                                                                                                                                                                                                           0.1s
+ => => exporting manifest list sha256:3fd8ebb8d9c123fa14ae6af934a1c72067879acc713e4ab50195bde76f6dad5e                                                                                                                                                                                                                  0.1s
+ => => naming to docker.io/library/apps-app:latest                                                                                                                                                                                                                                                                      0.0s
+ => => unpacking to docker.io/library/apps-app:latest                                                                                                                                                                                                                                                                   0.0s
+ => resolving provenance for metadata file                                                                                                                                                                                                                                                                              0.0s
+[+] up 4/4
+ ✔ Image apps-app         Built                                                                                                                                                                                                                                                                                          1.6s
+ ✔ Network apps_default   Created                                                                                                                                                                                                                                                                                        0.1s
+ ✔ Container apps-redis-1 Healthy                                                                                                                                                                                                                                                                                       10.9s
+ ✔ Container apps-app-1   Started                                                                                                                                                                                                                                                                                       11.0s
+root@debian:~/apps# docker ps
+CONTAINER ID   IMAGE            COMMAND                  CREATED          STATUS                            PORTS                                         NAMES
+f0a3a8f4fe3b   apps-app         "docker-entrypoint.s…"   19 seconds ago   Up 8 seconds (health: starting)   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp   apps-app-1
+a36b7afd632e   redis:7-alpine   "docker-entrypoint.s…"   19 seconds ago   Up 19 seconds (healthy)           6379/tcp                                      apps-redis-1
+root@debian:~/apps# curl http://localhost:8080
+Привіт! Це simple-app.
+Лічильник відвідувань: 11
+Дані збережено у Volume.
+root@debian:~/apps# curl http://localhost:8080
+Привіт! Це simple-app.
+Лічильник відвідувань: 12
+Дані збережено у Volume.
+root@debian:~/apps# curl http://localhost:8080
+Привіт! Це simple-app.
+Лічильник відвідувань: 13
+Дані збережено у Volume.
+root@debian:~/apps# curl http://localhost:8080
+Привіт! Це simple-app.
+Лічильник відвідувань: 14
+Дані збережено у Volume.
+root@debian:~/apps# docker compose down
+[+] down 3/3
+ ✔ Container apps-app-1   Removed                                                                                                                                                                                                                                                                                        0.8s
+ ✔ Container apps-redis-1 Removed                                                                                                                                                                                                                                                                                        0.4s
+ ✔ Network apps_default   Removed                                                                                                                                                                                                                                                                                        0.2s
+root@debian:~/apps# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@debian:~/apps# docker compose up -d
+[+] up 3/3
+ ✔ Network apps_default   Created                                                                                                                                                                                                                                                                                        0.0s
+ ✔ Container apps-redis-1 Healthy                                                                                                                                                                                                                                                                                       10.9s
+ ✔ Container apps-app-1   Started                                                                                                                                                                                                                                                                                       11.1s
+root@debian:~/apps# curl http://localhost:8080
+Привіт! Це simple-app.
+Лічильник відвідувань: 15
+Дані збережено у Volume.
+root@debian:~/apps# curl http://localhost:8080
+Привіт! Це simple-app.
+Лічильник відвідувань: 16
+Дані збережено у Volume.
+root@debian:~/apps# curl http://localhost:8080
+Привіт! Це simple-app.
+Лічильник відвідувань: 17
+Дані збережено у Volume.
