@@ -1,0 +1,100 @@
+root@debian:~# ls
+apps
+root@debian:~# cd apps
+root@debian:~/apps# ls
+docker-compose.yml  simple-app
+root@debian:~/apps# mc
+
+root@debian:~/apps# mcedit course-app-k8s.yaml
+
+root@debian:~/apps# docker tag apps-app lvv77/course-app:v7.0
+root@debian:~/apps# docker push lvv77/course-app:v7.0
+The push refers to repository [docker.io/lvv77/course-app]
+823e1a305634: Pushed
+64cfb949317c: Pushed
+8511fada38c0: Pushed
+cfc6d829c784: Pushed
+c46221a3ce0f: Pushed
+ff86ea2e5edc: Pushed
+e54aec64c365: Pushed
+804d4d68057c: Pushed
+3c02fd806613: Pushed
+819e4dc1cb22: Pushed
+v7.0: digest: sha256:3fd8ebb8d9c123fa14ae6af934a1c72067879acc713e4ab50195bde76f6dad5e size: 856
+
+root@debian:~/apps# useradd -m -s /bin/bash lvv
+root@debian:~/apps# usermod -aG docker lvv
+root@debian:~/apps# passwd lvv
+New password:
+Retype new password:
+passwd: password updated successfully
+root@debian:~/apps# su - lvv
+lvv@debian:~$ minikube start --driver=docker
+* minikube v1.38.1 on Debian 13.4 (kvm/amd64)
+* Using the docker driver based on user configuration
+! Starting v1.39.0, minikube will default to "containerd" container runtime. See #21973 for more info.
+
+X The requested memory allocation of 1967MiB does not leave room for system overhead (total system memory: 1967MiB). You may face stability issues.
+* Suggestion: Start minikube with less memory allocated: 'minikube start --memory=1967mb'
+
+* Using Docker driver with root privileges
+* Starting "minikube" primary control-plane node in "minikube" cluster
+* Pulling base image v0.0.50 ...
+* Downloading Kubernetes v1.35.1 preload ...
+    > preloaded-images-k8s-v18-v1...:  272.45 MiB / 272.45 MiB  100.00% 33.96 M
+    > gcr.io/k8s-minikube/kicbase...:  519.58 MiB / 519.58 MiB  100.00% 34.96 M
+* Creating docker container (CPUs=2, Memory=1967MB) ...
+* Preparing Kubernetes v1.35.1 on Docker 29.2.1 ...
+* Configuring bridge CNI (Container Networking Interface) ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: default-storageclass, storage-provisioner
+* kubectl not found. If you need it, try: 'minikube kubectl -- get pods -A'
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+lvv@debian:~$ minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+lvv@debian:~$ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 56.7M  100 56.7M    0     0  43.9M      0  0:00:01  0:00:01 --:--:-- 43.9M
+lvv@debian:~$ chmod +x kubectl
+lvv@debian:/root/apps$ kubectl apply -f course-app-k8s.yaml
+deployment.apps/course-app-deployment created
+service/course-app-service created
+
+lvv@debian:/root/apps$ kubectl get pods
+NAME                                     READY   STATUS    RESTARTS   AGE
+course-app-deployment-7f7797bd58-47x8z   1/1     Running   0          7m16s
+course-app-deployment-7f7797bd58-b4fjk   1/1     Running   0          7m16s
+
+
+lvv@debian:/root/apps$ minikube service course-app-service --url
+http://192.168.49.2:30080
+
+lvv@debian:/root/apps$ kubectl apply -f course-app-k8s.yaml
+deployment.apps/course-app-deployment configured
+service/course-app-service unchanged
+lvv@debian:/root/apps$ kubectl rollout status deployment/course-app-deployment
+deployment "course-app-deployment" successfully rolled out
+lvv@debian:/root/apps$ kubectl get pods
+NAME                                     READY   STATUS    RESTARTS   AGE
+course-app-deployment-7f7797bd58-47x8z   1/1     Running   0          7m41s
+course-app-deployment-7f7797bd58-7f8nn   1/1     Running   0          7s
+course-app-deployment-7f7797bd58-7ppnx   1/1     Running   0          6s
+course-app-deployment-7f7797bd58-b4fjk   1/1     Running   0          7m41s
+course-app-deployment-7f7797bd58-cp7mm   1/1     Running   0          6s
+course-app-deployment-7f7797bd58-pn96m   1/1     Running   0          7s
+course-app-deployment-7f7797bd58-r884r   1/1     Running   0          6s
+course-app-deployment-7f7797bd58-tk46b   1/1     Running   0          6s
+course-app-deployment-7f7797bd58-xflcd   1/1     Running   0          7s
+course-app-deployment-7f7797bd58-zbp2f   1/1     Running   0          6s
+lvv@debian:/root/apps$ minikube service course-app-service --url
+http://192.168.49.2:30080
+curl http://192.168.49.2:30080
+
+
