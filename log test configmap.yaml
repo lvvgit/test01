@@ -1,0 +1,43 @@
+lvv@debian:/root/apps$ kubectl apply -f configmap.yaml
+configmap/course-app-config unchanged
+lvv@debian:/root/apps$ kubectl rollout restart deployment/course-app-deployment
+deployment.apps/course-app-deployment restarted
+lvv@debian:/root/apps$ kubectl get pods
+NAME                                     READY   STATUS        RESTARTS   AGE
+course-app-deployment-6596d658bf-zb8z8   1/1     Terminating   0          41m
+course-app-deployment-67c5f78fd6-5m56w   1/1     Running       0          2s
+course-app-deployment-67c5f78fd6-67l8v   1/1     Running       0          5s
+course-app-deployment-67c5f78fd6-bwz29   1/1     Running       0          5s
+course-app-deployment-67c5f78fd6-cngwd   1/1     Running       0          5s
+course-app-deployment-67c5f78fd6-vjw7s   1/1     Running       0          2s
+lvv@debian:/root/apps$ kubectl get configmap course-app-config -o yaml
+apiVersion: v1
+data:
+  APP_COLOR: green
+  APP_MODE: production
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"APP_COLOR":"green","APP_MODE":"production"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"course-app-config","namespace":"default"}}
+  creationTimestamp: "2026-04-30T16:01:49Z"
+  name: course-app-config
+  namespace: default
+  resourceVersion: "16030"
+  uid: c966f0b6-f7eb-4d1c-920b-80b7cccd18fd
+lvv@debian:/root/apps$ kubectl exec -it course-app-deployment-67c5f78fd6-vjw7s  -- printenv | grep APP_COLOR
+APP_COLOR=green
+
+lvv@debian:/root/apps$ kubectl apply -f configmap.yaml
+configmap/course-app-config configured
+lvv@debian:/root/apps$ kubectl rollout restart deployment/course-app-deployment
+deployment.apps/course-app-deployment restarted
+lvv@debian:/root/apps$ kubectl get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+course-app-deployment-dc6449978-4774p   1/1     Running   0          24s
+course-app-deployment-dc6449978-4vc4n   1/1     Running   0          25s
+course-app-deployment-dc6449978-6n822   1/1     Running   0          22s
+course-app-deployment-dc6449978-9qzs5   1/1     Running   0          25s
+course-app-deployment-dc6449978-g5rmc   1/1     Running   0          25s
+lvv@debian:/root/apps$ kubectl exec -it course-app-deployment-dc6449978-g5rmc  -- printenv | grep APP_COLOR
+APP_COLOR=blue
