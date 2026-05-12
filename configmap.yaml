@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: course-app-config
+data:
+  APP_COLOR: "greenn"
+  #APP_COLOR: "red"
+  APP_MODE: "production"
