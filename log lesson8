@@ -1,0 +1,163 @@
+
+lvv@debian:/root/apps$ minikube start --driver=docker --force
+* minikube v1.38.1 on Debian 13.4 (kvm/amd64)
+! minikube skips various validations when --force is supplied; this may lead to unexpected behavior
+* Using the docker driver based on user configuration
+! Starting v1.39.0, minikube will default to "containerd" container runtime. See #21973 for more info.
+
+X The requested memory allocation of 1967MiB does not leave room for system overhead (total system memory: 1967MiB). You may face stability issues.
+* Suggestion: Start minikube with less memory allocated: 'minikube start --memory=1967mb'
+
+* Using Docker driver with root privileges
+* Starting "minikube" primary control-plane node in "minikube" cluster
+* Pulling base image v0.0.50 ...
+* Creating docker container (CPUs=2, Memory=1967MB) ...
+* Preparing Kubernetes v1.35.1 on Docker 29.2.1 ...
+* Configuring bridge CNI (Container Networking Interface) ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: default-storageclass, storage-provisioner
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+lvv@debian:/root/apps$ minikube addons enable ingress
+* ingress is an addon maintained by Kubernetes. For any concerns contact minikube on GitHub.
+You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS
+  - Using image registry.k8s.io/ingress-nginx/controller:v1.14.3
+  - Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.7
+  - Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.7
+* Verifying ingress addon...
+* The 'ingress' addon is enabled
+lvv@debian:/root/apps$ kubectl apply -f course-app-k8s.yaml
+deployment.apps/course-app-deployment created
+service/course-app-service created
+ingress.networking.k8s.io/course-app-ingress created
+lvv@debian:/root/apps$ kubectl get pods -n ingress-nginx
+NAME                                        READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-78bk5        0/1     Completed   0          83s
+ingress-nginx-admission-patch-4lnwf         0/1     Completed   0          83s
+ingress-nginx-controller-596f8778bc-tlv2t   1/1     Running     0          83s
+lvv@debian:/root/apps$ kubectl apply -f configmap.yaml
+configmap/course-app-config created
+lvv@debian:/root/apps$ kubectl apply -f course-app-k8s.yaml
+deployment.apps/course-app-deployment unchanged
+service/course-app-service unchanged
+ingress.networking.k8s.io/course-app-ingress unchanged
+lvv@debian:/root/apps$ minikube ip
+192.168.49.2
+lvv@debian:/root/apps$ kubectl get ingress
+NAME                 CLASS   HOSTS                              ADDRESS        PORTS   AGE
+course-app-ingress   nginx   course-app.192.168.49.2.lvv.io   192.168.49.2   80      81s
+lvv@debian:/root/apps$ curl http://course-app.192.168.49.2.lvv.io
+Привіт! Це simple-app.
+Лічильник відвідувань: 1
+Дані збережено у Volume.
+lvv@debian:/root/apps$ curl http://course-app.192.168.49.2.lvv.io
+Привіт! Це simple-app.
+Лічильник відвідувань: 1
+Дані збережено у Volume.
+lvv@debian:/root/apps$ curl http://course-app.192.168.49.2.lvv.io
+Привіт! Це simple-app.
+Лічильник відвідувань: 2
+Дані збережено у Volume.
+lvv@debian:/root/apps$ curl http://course-app.192.168.49.2.lvv.io
+Привіт! Це simple-app.
+Лічильник відвідувань: 1
+Дані збережено у Volume.
+lvv@debian:/root/apps$ kubectl get ep course-app-service
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                 ENDPOINTS                                                        AGE
+course-app-service   10.244.0.10:8080,10.244.0.11:8080,10.244.0.12:8080 + 7 more...   11m
+lvv@debian:/root/apps$ mc
+
+lvv@debian:/root/apps$ kubectl rollout restart
+error: required resource not specified
+lvv@debian:/root/apps$ kubectl rollout restart deployment/course-app-deployment
+deployment.apps/course-app-deployment restarted
+lvv@debian:/root/apps$ curl http://course-app.192.168.49.2.lvv.io
+Привіт! Це simple-app.
+Лічильник відвідувань: 2
+Дані збережено у Volume.
+lvv@debian:/root/apps$ curl http://course-app.192.168.49.2.lvv.io
+Привіт! Це simple-app.
+Лічильник відвідувань: 1
+Дані збережено у Volume.
+lvv@debian:/root/apps$ curl http://course-app.192.168.49.2.lvv.io
+Привіт! Це simple-app.
+Лічильник відвідувань: 1
+Дані збережено у Volume.
+lvv@debian:/root/apps$ curl http://course-app.192.168.49.2.lvv.io
+Привіт! Це simple-app.
+Лічильник відвідувань: 1
+Дані збережено у Volume.
+lvv@debian:/root/apps$ kubectl get ingress^C
+lvv@debian:/root/apps$ ^C
+lvv@debian:/root/apps$ kubectl get ingress
+NAME                 CLASS   HOSTS                              ADDRESS        PORTS   AGE
+course-app-ingress   nginx   course-app.192.168.49.2.lvv.io   192.168.49.2   80      15m
+lvv@debian:/root/apps$ kubectl get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+course-app-deployment-6f9845b7b-7pxk4   1/1     Running   0          94s
+course-app-deployment-6f9845b7b-8jqcw   1/1     Running   0          93s
+course-app-deployment-6f9845b7b-b4w68   1/1     Running   0          84s
+course-app-deployment-6f9845b7b-bbznc   1/1     Running   0          76s
+course-app-deployment-6f9845b7b-fgmfm   1/1     Running   0          85s
+course-app-deployment-6f9845b7b-g2gc7   1/1     Running   0          102s
+course-app-deployment-6f9845b7b-g76mf   1/1     Running   0          92s
+course-app-deployment-6f9845b7b-lz6h4   1/1     Running   0          84s
+course-app-deployment-6f9845b7b-plcnf   1/1     Running   0          102s
+course-app-deployment-6f9845b7b-wgq28   1/1     Running   0          102s
+lvv@debian:/root/apps$ kubectl rollout restart deployment/course-app-deployment
+deployment.apps/course-app-deployment restarted
+lvv@debian:/root/apps$ kubectl get pods
+NAME                                     READY   STATUS              RESTARTS   AGE
+course-app-deployment-6f9845b7b-bbznc    0/1     Error               0          2m16s
+course-app-deployment-6f9845b7b-g2gc7    1/1     Terminating         0          2m42s
+course-app-deployment-6f9845b7b-g76mf    1/1     Terminating         0          2m32s
+course-app-deployment-7bf56876bd-d4zfm   1/1     Running             0          27s
+course-app-deployment-7bf56876bd-hq24p   1/1     Running             0          9s
+course-app-deployment-7bf56876bd-mzpd9   1/1     Running             0          27s
+course-app-deployment-7bf56876bd-nrgwg   1/1     Running             0          18s
+course-app-deployment-7bf56876bd-px5ql   1/1     Running             0          10s
+course-app-deployment-7bf56876bd-qfp8f   1/1     Running             0          8s
+course-app-deployment-7bf56876bd-s58tq   1/1     Running             0          18s
+course-app-deployment-7bf56876bd-xw5nw   0/1     ContainerCreating   0          2s
+course-app-deployment-7bf56876bd-z7vjb   0/1     ContainerCreating   0          1s
+course-app-deployment-7bf56876bd-zxfhr   0/1     ContainerCreating   0          1s
+lvv@debian:/root/apps$ kubectl get pods
+NAME                                     READY   STATUS    RESTARTS   AGE
+course-app-deployment-7bf56876bd-d4zfm   1/1     Running   0          31s
+course-app-deployment-7bf56876bd-hq24p   1/1     Running   0          13s
+course-app-deployment-7bf56876bd-mzpd9   1/1     Running   0          31s
+course-app-deployment-7bf56876bd-nrgwg   1/1     Running   0          22s
+course-app-deployment-7bf56876bd-px5ql   1/1     Running   0          14s
+course-app-deployment-7bf56876bd-qfp8f   1/1     Running   0          12s
+course-app-deployment-7bf56876bd-s58tq   1/1     Running   0          22s
+course-app-deployment-7bf56876bd-xw5nw   1/1     Running   0          5s
+course-app-deployment-7bf56876bd-z7vjb   0/1     Running   0          4s
+course-app-deployment-7bf56876bd-zxfhr   1/1     Running   0          4s
+lvv@debian:/root/apps$ kubectl get pods
+NAME                                     READY   STATUS    RESTARTS   AGE
+course-app-deployment-7bf56876bd-d4zfm   1/1     Running   0          32s
+course-app-deployment-7bf56876bd-hq24p   1/1     Running   0          14s
+course-app-deployment-7bf56876bd-mzpd9   1/1     Running   0          32s
+course-app-deployment-7bf56876bd-nrgwg   1/1     Running   0          23s
+course-app-deployment-7bf56876bd-px5ql   1/1     Running   0          15s
+course-app-deployment-7bf56876bd-qfp8f   1/1     Running   0          13s
+course-app-deployment-7bf56876bd-s58tq   1/1     Running   0          23s
+course-app-deployment-7bf56876bd-xw5nw   1/1     Running   0          10s
+course-app-deployment-7bf56876bd-z7vjb   0/1     Running   0          9s
+course-app-deployment-7bf56876bd-zxfhr   1/1     Running   0          9s
+lvv@debian:/root/apps$ kubectl get pods
+NAME                                     READY   STATUS    RESTARTS   AGE
+course-app-deployment-7bf56876bd-d4zfm   1/1     Running   0          38s
+course-app-deployment-7bf56876bd-hq24p   1/1     Running   0          20s
+course-app-deployment-7bf56876bd-mzpd9   1/1     Running   0          38s
+course-app-deployment-7bf56876bd-nrgwg   1/1     Running   0          29s
+course-app-deployment-7bf56876bd-px5ql   1/1     Running   0          21s
+course-app-deployment-7bf56876bd-qfp8f   1/1     Running   0          19s
+course-app-deployment-7bf56876bd-s58tq   1/1     Running   0          29s
+course-app-deployment-7bf56876bd-xw5nw   1/1     Running   0          17s
+course-app-deployment-7bf56876bd-z7vjb   1/1     Running   0          15s
+course-app-deployment-7bf56876bd-zxfhr   1/1     Running   0          14s
+lvv@debian:/root/apps$ kubectl get pods
+
+lvv@debian:/root/apps$ kubectl describe deployment course-app-deployment | grep -A 5 Probe
