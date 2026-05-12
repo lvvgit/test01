@@ -1,0 +1,22 @@
+
+lvv@debian:/root/apps$ kubectl get sc
+NAME                 PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+standard (default)   k8s.io/minikube-hostpath   Delete          Immediate           false                  46m
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+root@debian:~/apps# mkdir -p k8s
+root@debian:~/apps# mcedit k8s/redis-statefulset.yaml
+root@debian:~/apps# mcedit k8s/redis-service.yaml
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+lvv@debian:/root/apps$ kubectl apply -f k8s/redis-statefulset.yaml -f k8s/redis-service.yaml
+statefulset.apps/redis created
+service/redis created
+lvv@debian:/root/apps$ kubectl get pvc
+NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+redis-data-redis-0   Bound    pvc-55f3ff69-ad82-428c-b776-087c7ae17070   1Gi        RWO            standard       <unset>                 11s
+lvv@debian:/root/apps$ kubectl get sts
+NAME    READY   AGE
+redis   1/1     21s
