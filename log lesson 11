@@ -1,0 +1,35 @@
+root@debian:~/apps# kubectl get pods -l app=course-app
+NAME                                     READY   STATUS                       RESTARTS   AGE
+course-app-deployment-84644fb976-5njlv   0/1     CreateContainerConfigError   0          42m
+course-app-deployment-84644fb976-8qmv5   0/1     CreateContainerConfigError   0          42m
+course-app-deployment-84644fb976-kz9st   0/1     CreateContainerConfigError   0          42m
+course-app-deployment-84644fb976-n9j57   0/1     Running                      0          42m
+course-app-deployment-84644fb976-skhxr   0/1     CreateContainerConfigError   0          42m
+root@debian:~/apps# kubectl get pods -l app=course-app
+NAME                                     READY   STATUS                       RESTARTS   AGE
+course-app-deployment-84644fb976-5njlv   0/1     Running                      0          42m
+course-app-deployment-84644fb976-8qmv5   0/1     CreateContainerConfigError   0          42m
+course-app-deployment-84644fb976-kz9st   0/1     Running                      0          42m
+course-app-deployment-84644fb976-n9j57   0/1     Running                      0          42m
+course-app-deployment-84644fb976-skhxr   0/1     Running                      0          42m
+root@debian:~/apps# kubectl get pods -l app=course-app
+NAME                                     READY   STATUS    RESTARTS   AGE
+course-app-deployment-84644fb976-5njlv   0/1     Running   0          42m
+course-app-deployment-84644fb976-8qmv5   0/1     Running   0          42m
+course-app-deployment-84644fb976-kz9st   0/1     Running   0          42m
+course-app-deployment-84644fb976-n9j57   0/1     Running   0          42m
+course-app-deployment-84644fb976-skhxr   0/1     Running   0          42m
+root@debian:~/apps# kubectl get pods -l app=course-app
+NAME                                     READY   STATUS    RESTARTS   AGE
+course-app-deployment-84644fb976-5njlv   0/1     Running   0          42m
+course-app-deployment-84644fb976-8qmv5   0/1     Running   0          42m
+course-app-deployment-84644fb976-kz9st   0/1     Running   0          42m
+course-app-deployment-84644fb976-n9j57   0/1     Running   0          42m
+course-app-deployment-84644fb976-skhxr   0/1     Running   0          42m
+root@debian:~/apps# kubectl get pods -l app=course-app
+NAME                                     READY   STATUS    RESTARTS   AGE
+course-app-deployment-84644fb976-5njlv   1/1     Running   0          43m
+course-app-deployment-84644fb976-8qmv5   1/1     Running   0          43m
+course-app-deployment-84644fb976-kz9st   1/1     Running   0          43m
+course-app-deployment-84644fb976-n9j57   1/1     Running   0          43m
+course-app-deployment-84644fb976-skhxr   1/1     Running   0          43m
