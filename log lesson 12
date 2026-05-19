@@ -1,0 +1,80 @@
+root@debian:~# minikube start --driver=docker --force --memory=1600mb
+* minikube v1.38.1 on Debian 13.5 (kvm/amd64)
+! minikube skips various validations when --force is supplied; this may lead to unexpected behavior
+* Using the docker driver based on user configuration
+
+X Requested memory allocation 1600MiB is less than the usable minimum of 1800MB
+
+
+X Requested memory allocation (1600MB) is less than the recommended minimum 1900MB. Deployments may fail.
+
+* The "docker" driver should not be used with root privileges. If you wish to continue as root, use --force.
+* If you are running minikube within a VM, consider using --driver=none:
+*   https://minikube.sigs.k8s.io/docs/reference/drivers/none/
+! Starting v1.39.0, minikube will default to "containerd" container runtime. See #21973 for more info.
+* Using Docker driver with root privileges
+* Starting "minikube" primary control-plane node in "minikube" cluster
+* Pulling base image v0.0.50 ...
+* Creating docker container (CPUs=2, Memory=1600MB) ...
+* Preparing Kubernetes v1.35.1 on Docker 29.2.1 ...
+* Configuring bridge CNI (Container Networking Interface) ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: default-storageclass, storage-provisioner
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+root@debian:~# kubectl get pods
+No resources found in default namespace.
+root@debian:~# kubectl get pods
+No resources found in default namespace.
+
+root@debian:~/apps/dragonfly-operator/charts/dragonfly-operator# helm install dragonfly-operator .
+walk.go:75: found symbolic link in path: /root/apps/dragonfly-operator/charts/dragonfly-operator/dashboards/grafana-dashboard.json resolves to /root/apps/dragonfly-operator/monitoring/grafana-dashboard.json. Contents of linked file included and used
+NAME: dragonfly-operator
+LAST DEPLOYED: Tue May 19 16:20:03 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+
+root@debian:~/apps/dragonfly-operator/charts/dragonfly-operator# kubectl apply -f /root/apps/dragonfly.yaml
+dragonfly.dragonflydb.io/dragonfly-kv configured
+
+root@debian:~/apps/dragonfly-operator/charts/dragonfly-operator# docker pull  docker.dragonflydb.io/dragonflydb/dragonfly
+Using default tag: latest
+latest: Pulling from dragonflydb/dragonfly
+a674ce93b13c: Pull complete
+36cfb2482c5c: Pull complete
+f63eb04151bc: Pull complete
+13e46304f3dd: Pull complete
+a3f6b69dcbc2: Pull complete
+8a364b9e16cc: Pull complete
+4f4fb700ef54: Pull complete
+19e400db57da: Pull complete
+Digest: sha256:baf70ba7ad182a992b988497cfa31a488978c8fab7712079784c2401f447e402
+Status: Downloaded newer image for docker.dragonflydb.io/dragonflydb/dragonfly:latest
+docker.dragonflydb.io/dragonflydb/dragonfly:latest
+
+root@debian:~/apps/dragonfly-operator/charts/dragonfly-operator# kubectl get pods
+NAME                                  READY   STATUS    RESTARTS   AGE
+dragonfly-kv-0                        0/1     Running   0          8s
+dragonfly-operator-59949d8764-pnqg6   2/2     Running   0          29m
+root@debian:~/apps/dragonfly-operator/charts/dragonfly-operator# kubectl get pods
+NAME                                  READY   STATUS    RESTARTS   AGE
+dragonfly-kv-0                        0/1     Running   0          11s
+dragonfly-operator-59949d8764-pnqg6   2/2     Running   0          29m
+root@debian:~/apps/dragonfly-operator/charts/dragonfly-operator# kubectl get pods
+NAME                                  READY   STATUS    RESTARTS   AGE
+dragonfly-kv-0                        1/1     Running   0          46s
+dragonfly-operator-59949d8764-pnqg6   2/2     Running   0          30m
+root@debian:~/apps/dragonfly-operator/charts/dragonfly-operator# kubectl get pods
+NAME                                  READY   STATUS    RESTARTS   AGE
+dragonfly-kv-0                        1/1     Running   0          47s
+dragonfly-operator-59949d8764-pnqg6   2/2     Running   0          30m
+
+root@debian:~/apps/dragonfly-operator/charts/dragonfly-operator# kubectl apply -f /root/apps/dragonfly-rbac.yaml
+serviceaccount/db-viewer created
+role.rbac.authorization.k8s.io/db-readonly created
+rolebinding.rbac.authorization.k8s.io/db-viewer-binding created
+root@debian:~/apps/dragonfly-operator/charts/dragonfly-operator# kubectl auth can-i list dragonflies --as=system:serviceaccount:default:db-viewer
+yes
+root@debian:~/apps/dragonfly-operator/charts/dragonfly-operator# kubectl auth can-i delete dragonflies --as=system:serviceaccount:default:db-viewer
+no
