@@ -1,3 +1,148 @@
+root@debian:\~# minikube start --driver=docker --force --memory=1800mb --cpus=2
+
+* minikube v1.38.1 on Debian 13.4 (kvm/amd64)
+  - KUBECONFIG=/root/.kube/config  
+    ! minikube skips various validations when --force is supplied; this may lead to unexpected behavior
+* Using the docker driver based on user configuration
+
+X Requested memory allocation (1800MB) is less than the recommended minimum 1900MB. Deployments may fail.
+
+* The "docker" driver should not be used with root privileges. If you wish to continue as root, use --force.
+* If you are running minikube within a VM, consider using --driver=none:
+* https://minikube.sigs.k8s.io/docs/reference/drivers/none/  
+  ! Starting v1.39.0, minikube will default to "containerd" container runtime. See #21973 for more info.
+* Using Docker driver with root privileges
+* Starting "minikube" primary control-plane node in "minikube" cluster
+* Pulling base image v0.0.50 ...
+* Downloading Kubernetes v1.35.1 preload ...
+
+  > preloaded-images-k8s-v18-v1...:  272.45 MiB / 272.45 MiB  100.00% 35.80 M
+  > gcr.io/k8s-minikube/kicbase...:  519.58 MiB / 519.58 MiB  100.00% 25.20 M
+* Creating docker container (CPUs=2, Memory=1800MB) ...
+* Preparing Kubernetes v1.35.1 on Docker 29.2.1 ...
+* Configuring bridge CNI (Container Networking Interface) ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: storage-provisioner, default-storageclass
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default  
+  root@debian:\~# kubectl get nodes  
+  NAME       STATUS   ROLES           AGE     VERSION  
+  minikube   Ready    control-plane   8m56s   v1.35.1  
+  root@debian:\~# helm install redis bitnami/redis --set auth.enabled=false --set architecture=standalone --set master.resources.requests.cpu=5                                                                                                 0m --set master.resources.requests.memory=128Mi  
+  NAME: redis  
+  LAST DEPLOYED: Fri May 15 12:10:00 2026  
+  NAMESPACE: default  
+  STATUS: deployed  
+  REVISION: 1  
+  TEST SUITE: None  
+  NOTES:  
+  CHART NAME: redis  
+  CHART VERSION: 25.5.3  
+  APP VERSION: 8.6.3
+
+⚠ WARNING: Since August 28th, 2025, only a limited subset of images/charts are available for free.
+Subscribe to Bitnami Secure Images to receive continued support and security updates.
+More info at https://bitnami.com and https://github.com/bitnami/containers/issues/83267
+
+ Please be patient while the chart is being deployed 
+
+Redis(R) can be accessed via port 6379 on the following DNS name from within your cluster:
+
+```
+redis-master.default.svc.cluster.local
+```
+
+To connect to your Redis(R) server:
+
+1. Run a Redis(R) pod that you can use as a client:
+
+   kubectl run --namespace default redis-client --restart='Never'  --image registry-1.docker.io/bitnami/redis:latest --command -- sleep infi                                                                                                 nity
+
+   Use the following command to attach to the pod:
+
+   kubectl exec --tty -i redis-client \
+   --namespace default -- bash
+2. Connect using the Redis(R) CLI:
+   redis-cli -h redis-master
+
+To connect to your database from outside the cluster execute the following commands:
+
+```
+kubectl port-forward --namespace default svc/redis-master 6379:6379 &
+redis-cli -h 127.0.0.1 -p 6379
+```
+
+WARNING: Rolling tag detected (bitnami/redis:latest), please note that it is strongly recommended to avoid using rolling tags in a productio                                                                                                 n environment.
++info https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/apps-tutorials-understan                                                                                                 d-rolling-tags-containers-index.html
+WARNING: Rolling tag detected (bitnami/redis-sentinel:latest), please note that it is strongly recommended to avoid using rolling tags in a                                                                                                  production environment.
++info https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/apps-tutorials-understan                                                                                                 d-rolling-tags-containers-index.html
+WARNING: Rolling tag detected (bitnami/redis-exporter:latest), please note that it is strongly recommended to avoid using rolling tags in a                                                                                                  production environment.
++info https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/apps-tutorials-understan                                                                                                 d-rolling-tags-containers-index.html
+WARNING: Rolling tag detected (bitnami/os-shell:latest), please note that it is strongly recommended to avoid using rolling tags in a produc                                                                                                 tion environment.
++info https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/apps-tutorials-understan                                                                                                 d-rolling-tags-containers-index.html
+WARNING: Rolling tag detected (bitnami/os-shell:latest), please note that it is strongly recommended to avoid using rolling tags in a produc                                                                                                 tion environment.
++info https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/apps-tutorials-understan                                                                                                 d-rolling-tags-containers-index.html
+
+WARNING: There are "resources" sections in the chart not set. Using "resourcesPreset" is not recommended for production. For production inst                                                                                                 allations, please set the following values according to your workload needs:
+
+- replica.resources  
+  +info https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/  
+  root@debian:\~#  
+  root@debian:\~# helm install redis bitnami/redis --set auth.enabled=false --set architecture=standalone --set master.resources.requests.cpu=5                                                                                                 0m --set master.resources.requests.memory=128Mi  
+  NAME: redis  
+  LAST DEPLOYED: Fri May 15 12:10:00 2026  
+  NAMESPACE: default  
+  STATUS: deployed  
+  REVISION: 1  
+  TEST SUITE: None  
+  NOTES:  
+  CHART NAME: redis  
+  CHART VERSION: 25.5.3  
+  APP VERSION: 8.6.3
+
+⚠ WARNING: Since August 28th, 2025, only a limited subset of images/charts are available for free.
+Subscribe to Bitnami Secure Images to receive continued support and security updates.
+More info at https://bitnami.com and https://github.com/bitnami/containers/issues/83267
+
+ Please be patient while the chart is being deployed 
+
+Redis(R) can be accessed via port 6379 on the following DNS name from within your cluster:
+
+```
+redis-master.default.svc.cluster.local
+```
+
+To connect to your Redis(R) server:
+
+1. Run a Redis(R) pod that you can use as a client:
+
+   kubectl run --namespace default redis-client --restart='Never'  --image registry-1.docker.io/bitnami/redis:latest --command -- sleep infi                                                                                                 nity
+
+   Use the following command to attach to the pod:
+
+   kubectl exec --tty -i redis-client \
+   --namespace default -- bash
+2. Connect using the Redis(R) CLI:
+   redis-cli -h redis-master
+
+To connect to your database from outside the cluster execute the following commands:
+
+```
+kubectl port-forward --namespace default svc/redis-master 6379:6379 &
+```
+
++info https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/^Cis not recommended for production. For production inst
+root@debian:\~# kubectl get pods
+NAME             READY   STATUS    RESTARTS   AGE
+redis-master-0   1/1     Running   0          85s
+root@debian:\~# cd /root/apps
+root@debian:\~/apps# helm install course-app ./course-app-chart
+NAME: course-app
+LAST DEPLOYED: Fri May 15 12:11:45 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
 root@debian:~/apps# kubectl get pods -l app=course-app
 NAME                                     READY   STATUS                       RESTARTS   AGE
 course-app-deployment-84644fb976-5njlv   0/1     CreateContainerConfigError   0          42m
